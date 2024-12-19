@@ -21,7 +21,7 @@ def ocr():
     # Convertir les résultats en types sérialisables
     serializable_result = [
         {
-            "bbox": [int(coord) for coord in item[0]],  # Convertir les coordonnées en int
+            "bbox": [[int(coord) for coord in point] for point in item[0]],  # Convertir les coordonnées en int
             "text": item[1],
             "confidence": float(item[2])  # Convertir la confiance en float
         }
