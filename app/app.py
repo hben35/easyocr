@@ -17,7 +17,18 @@ def ocr():
 
     # Lire le texte de l'image
     result = reader.readtext(image_path)
-    return jsonify(result)
+
+    # Convertir les résultats en types sérialisables
+    serializable_result = [
+        {
+            "bbox": [int(coord) for coord in item[0]],  # Convertir les coordonnées en int
+            "text": item[1],
+            "confidence": float(item[2])  # Convertir la confiance en float
+        }
+        for item in result
+    ]
+
+    return jsonify(serializable_result)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
