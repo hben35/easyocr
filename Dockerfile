@@ -5,12 +5,13 @@ FROM python:3.9-slim
 RUN pip install easyocr flask
 
 # Copier le code de l'application
-COPY . /app
+COPY app /app
 
 # Définir le répertoire de travail
 WORKDIR /app
 
 # Exposer le port de l'application Flask
 EXPOSE 5000
+
 # Lancer l'application Flask
 CMD ["python", "app.py"]
