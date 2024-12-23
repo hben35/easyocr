@@ -1,19 +1,25 @@
+import base64
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import easyocr
+import io
+from PIL import Image
 
 app = Flask(__name__)
-CORS(app)  # Add this line to enable CORS
+CORS(app)  # Enable CORS
 
-# Initialize the EasyOCR reader
+# Initialize EasyOCR reader
 reader = easyocr.Reader(['fr', 'en'])
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
-    image = request.files.get('image')
-    if not image:
+    data = request.get_json()
+    if not data or 'image' not in data:
         return jsonify({"error": "No image provided"}), 400
 
+    # Decode base64 image
+    image_data = data['image']
+    image = Image.open(io.BytesIO(base64.b64decode(image_data)))
     image_path = "./temp_image.jpg"
     image.save(image_path)
 
