@@ -36,23 +36,19 @@ def ocr():
         image.save(image_path)
 
         # Read text from the image with reduced workers
-        try:
-            result = reader.readtext(
+        #result = reader.readtext(image_path, batch_size=16, workers=4, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
+        result = reader.readtext(
                 image_path,
                 batch_size=16,  # Reduced batch size
                 workers=4,  # Reduced workers
                 decoder='beamsearch',
                 beamWidth=5,
-                paragraph=True,
-                x_ths=1.1,
-                y_ths=1.1,
+                #x_ths=1.1,
+                #y_ths=1.1,
                 text_threshold=0.7,
                 low_text=0.4,
                 link_threshold=0.4
             )
-        except Exception as e:
-            print(f"Error with paragraph=True: {e}")
-            result = reader.readtext(image_path, batch_size=16, workers=4, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
 
         # Check if result is empty and log appropriate messages
         if not result:
