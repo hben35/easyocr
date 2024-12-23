@@ -8,8 +8,8 @@ import base64
 app = Flask(__name__)
 CORS(app)  # Enable CORS
 
-# Initialize EasyOCR reader
-reader = easyocr.Reader(['fr', 'en'])
+# Initialize EasyOCR reader with optimized parameters
+reader = easyocr.Reader(['fr', 'en'], gpu=True, batch_size=16, workers=4)
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
@@ -35,8 +35,18 @@ def ocr():
         image_path = "./temp_image.jpg"
         image.save(image_path)
 
-        # Read text from the image
-        result = reader.readtext(image_path, batch_size=8, workers=2)
+        # Read text from the image with optimized parameters
+        result = reader.readtext(
+            image_path,
+            decoder='beamsearch',
+            beamWidth=5,
+            batch_size=16,
+            workers=4,
+            paragraph=True,
+            text_threshold=0.7,
+            low_text=0.4,
+            link_threshold=0.4
+        )
 
         # Convert results to serializable types
         serializable_result = [
