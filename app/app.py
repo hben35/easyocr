@@ -8,8 +8,8 @@ import base64
 app = Flask(__name__)
 CORS(app)  # Enable CORS
 
-# Initialize EasyOCR reader
-reader = easyocr.Reader(['fr', 'en'])
+# Initialize EasyOCR reader with GPU
+reader = easyocr.Reader(['fr', 'en'], gpu=True)
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
@@ -27,30 +27,54 @@ def ocr():
 
         # Decode the base64 image
         image = Image.open(io.BytesIO(base64.b64decode(image_data)))
-        
+
         # Convert RGBA to RGB if necessary
         if image.mode == 'RGBA':
             image = image.convert('RGB')
-        
+
         image_path = "./temp_image.jpg"
         image.save(image_path)
 
-        # Read text from the image
-        #result = reader.readtext(image_path, batch_size=16, workers=4, paragraph=True, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
-        result = reader.readtext(image_path, batch_size=16, workers=4, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
+        # Read text from the image with paragraph=True and additional parameters
+        try:
+            result = reader.readtext(
+                image_path,
+                batch_size=32,
+                workers=8,
+                decoder='beamsearch',
+                beamWidth=5,
+                paragraph=True,
+                x_ths=1.1,
+                y_ths=1.1,
+                text_threshold=0.7,
+                low_text=0.4,
+                link_threshold=0.4
+            )
+        except Exception as e:
+            print(f"Error with paragraph=True: {e}")
+            result = reader.readtext(image_path, batch_size=32, workers=8, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
+
+        # Log the result for debugging purposes
+        print(f"OCR Result: {result}")
+
+        # Check if result is empty and log appropriate messages
+        if not result:
+            return jsonify({"error": "No text detected"}), 200
+
         # Convert results to serializable types
-        serializable_result = [
-            {
-                "bbox": [[int(coord) for coord in point] for point in item[0]],
-                "text": item[1],
-                "confidence": float(item[2])
-            }
-            for item in result
-        ]
+        serializable_result = []
+        for item in result:
+            if len(item) == 3 and len(item[0]) == 4:  # Ensure bbox has 4 points and item has 3 elements
+                serializable_result.append({
+                    "bbox": [[int(coord) for coord in point] for point in item[0]],
+                    "text": item[1],
+                    "confidence": float(item[2])
+                })
 
         return jsonify(serializable_result)
-    
+
     except Exception as e:
+        print(f"Error during OCR processing: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
