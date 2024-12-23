@@ -36,8 +36,8 @@ def ocr():
         image.save(image_path)
 
         # Read text from the image
-         result = reader.readtext(image_path, batch_size=16, workers=4, paragraph=True, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
-
+        #result = reader.readtext(image_path, batch_size=16, workers=4, paragraph=True, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
+        result = reader.readtext(image_path, batch_size=16, workers=4, low_text=0.4)
         # Convert results to serializable types
         serializable_result = [
             {
