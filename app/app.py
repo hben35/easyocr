@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import easyocr
 
 app = Flask(__name__)
+CORS(app)  # Add this line to enable CORS
 
-# Initialiser le lecteur EasyOCR avec les langues nécessaires
+# Initialize the EasyOCR reader
 reader = easyocr.Reader(['fr', 'en'])
 
 @app.route('/ocr', methods=['POST'])
@@ -15,15 +17,15 @@ def ocr():
     image_path = "./temp_image.jpg"
     image.save(image_path)
 
-    # Lire le texte de l'image avec batch_size et workers ajustés
+    # Read text from the image
     result = reader.readtext(image_path, batch_size=8, workers=2)
 
-    # Convertir les résultats en types sérialisables
+    # Convert results to serializable types
     serializable_result = [
         {
-            "bbox": [[int(coord) for coord in point] for point in item[0]],  # Convertir les coordonnées en int
+            "bbox": [[int(coord) for coord in point] for point in item[0]],
             "text": item[1],
-            "confidence": float(item[2])  # Convertir la confiance en float
+            "confidence": float(item[2])
         }
         for item in result
     ]
