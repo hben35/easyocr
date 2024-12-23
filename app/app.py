@@ -44,10 +44,10 @@ def ocr():
                 decoder='beamsearch',
                 beamWidth=5,
                 width_ths=1.1,
-                text_threshold=0.8,
-                low_text=0.5,
-                link_threshold=0.4,
-                mag_ratio=1.5
+                text_threshold=0.9,
+                low_text=0.2,
+                link_threshold=0.5,
+                mag_ratio=2
             )
 
         # Check if result is empty and log appropriate messages
