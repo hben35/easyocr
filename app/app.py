@@ -43,11 +43,11 @@ def ocr():
                 workers=4,  # Reduced workers
                 decoder='beamsearch',
                 beamWidth=5,
-                x_ths=1.1,
-                y_ths=1.1,
-                text_threshold=0.7,
-                low_text=0.4,
-                link_threshold=0.4
+                width_ths=1.1,
+                text_threshold=0.8,
+                low_text=0.5,
+                link_threshold=0.4,
+                mag_ratio=1.5
             )
 
         # Check if result is empty and log appropriate messages
