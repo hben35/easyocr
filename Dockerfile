@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Installer les dépendances nécessaires
-RUN pip install easyocr flask
+RUN pip install easyocr flask flask-cors
 
 # Copier le code de l'application
 COPY app /app
