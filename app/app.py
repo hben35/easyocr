@@ -27,6 +27,11 @@ def ocr():
 
         # Decode the base64 image
         image = Image.open(io.BytesIO(base64.b64decode(image_data)))
+        
+        # Convert RGBA to RGB if necessary
+        if image.mode == 'RGBA':
+            image = image.convert('RGB')
+        
         image_path = "./temp_image.jpg"
         image.save(image_path)
 
