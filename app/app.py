@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS
 
 # Initialize EasyOCR reader
-reader = easyocr.Reader(['fr', 'en'], gpu=False)
+reader = easyocr.Reader(['fr', 'en'])
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
@@ -27,39 +27,24 @@ def ocr():
 
         # Decode the base64 image
         image = Image.open(io.BytesIO(base64.b64decode(image_data)))
-
-        # Convert RGBA to RGB if necessary
-        if image.mode == 'RGBA':
-            image = image.convert('RGB')
-
         image_path = "./temp_image.jpg"
         image.save(image_path)
 
-        # Read text from the image with optimized parameters
-        result = reader.readtext(
-            image_path,
-            batch_size=16,
-            workers=4,
-            decoder='beamsearch',
-            beamWidth=5,
-            paragraph=True,
-            text_threshold=0.7,
-            low_text=0.4,
-            link_threshold=0.4
-        )
+        # Read text from the image
+        result = reader.readtext(image_path, batch_size=16, workers=4)
 
         # Convert results to serializable types
-        serializable_result = []
-        for item in result:
-            if len(item) == 3 and len(item[0]) == 4:  # Ensure bbox has 4 points and item has 3 elements
-                serializable_result.append({
-                    "bbox": [[int(coord) for coord in point] for point in item[0]],
-                    "text": item[1],
-                    "confidence": float(item[2])
-                })
+        serializable_result = [
+            {
+                "bbox": [[int(coord) for coord in point] for point in item[0]],
+                "text": item[1],
+                "confidence": float(item[2])
+            }
+            for item in result
+        ]
 
         return jsonify(serializable_result)
-
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
