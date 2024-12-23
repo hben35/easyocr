@@ -15,8 +15,8 @@ def ocr():
     image_path = "./temp_image.jpg"
     image.save(image_path)
 
-    # Lire le texte de l'image
-    result = reader.readtext(image_path)
+    # Lire le texte de l'image avec batch_size et workers ajustés
+    result = reader.readtext(image_path, batch_size=8, workers=2)
 
     # Convertir les résultats en types sérialisables
     serializable_result = [
