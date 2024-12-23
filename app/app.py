@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS
 
 # Initialize EasyOCR reader with optimized parameters
-reader = easyocr.Reader(['fr', 'en'], gpu= "False")
+reader = easyocr.Reader(['fr', 'en'])
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
