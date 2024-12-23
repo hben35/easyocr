@@ -43,8 +43,8 @@ def ocr():
                 workers=4,  # Reduced workers
                 decoder='beamsearch',
                 beamWidth=5,
-                #x_ths=1.1,
-                #y_ths=1.1,
+                x_ths=1.1,
+                y_ths=1.1,
                 text_threshold=0.7,
                 low_text=0.4,
                 link_threshold=0.4
