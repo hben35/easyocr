@@ -41,13 +41,13 @@ def ocr():
                 image_path,
                 batch_size=8,  # Reduced batch size
                 workers=4,  # Reduced workers
-                decoder='beamsearch',
-                beamWidth=6,
-                width_ths=1.2,
+                #decoder='beamsearch',
+                #beamWidth=6,
+                #width_ths=1.2,
                 #text_threshold=0.9,
-                low_text=0.3,
+                #low_text=0.3,
                 #link_threshold=0.5,
-                mag_ratio=1
+                #mag_ratio=1
             )
 
         # Check if result is empty and log appropriate messages
