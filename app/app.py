@@ -30,7 +30,7 @@ def ocr():
 
         # Convert RGBA to RGB if necessary
         if image.mode == 'RGBA':
-            image = image.convert('RGB')
+            image = image.convert('L')
 
         image_path = "./temp_image.jpg"
         image.save(image_path)
