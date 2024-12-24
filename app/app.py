@@ -39,7 +39,7 @@ def ocr():
         #result = reader.readtext(image_path, batch_size=16, workers=4, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
         result = reader.readtext(
                 image_path,
-                batch_size=16,  # Reduced batch size
+                batch_size=8,  # Reduced batch size
                 workers=4,  # Reduced workers
                 decoder='greedy',
                 beamWidth=6,
