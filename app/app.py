@@ -41,7 +41,7 @@ def ocr():
                 image_path,
                 batch_size=16,  # Reduced batch size
                 workers=4,  # Reduced workers
-                decoder='beamsearch',
+                decoder='greedy',
                 beamWidth=6,
                 width_ths=1.2,
                 #text_threshold=0.9,
