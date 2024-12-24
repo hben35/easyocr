@@ -30,25 +30,44 @@ def ocr():
 
         # Convert RGBA to RGB if necessary
         if image.mode == 'RGBA':
-            image = image.convert('L')
+            image = image.convert('RGB')
 
         image_path = "./temp_image.jpg"
         image.save(image_path)
 
-        # Read text from the image with reduced workers
-        #result = reader.readtext(image_path, batch_size=16, workers=4, text_threshold=0.7, low_text=0.4, link_threshold=0.4)
-        result = reader.readtext(
-                image_path,
-                batch_size=12,  # Reduced batch size
-                workers=4,  # Reduced workers
-                #decoder='beamsearch',
-                #beamWidth=6,
-                #width_ths=1.2,
-                #text_threshold=0.9,
-                #low_text=0.3,
-                #link_threshold=0.5,
-                #mag_ratio=1
-            )
+        # Get parameters from URL or set defaults
+        batch_size = request.args.get('batch_size', default=16, type=int)
+        workers = request.args.get('workers', default=4, type=int)
+        decoder = request.args.get('decoder', default=None, type=str)
+        beamWidth = request.args.get('beamWidth', default=None, type=int)
+        width_ths = request.args.get('width_ths', default=None, type=float)
+        text_threshold = request.args.get('text_threshold', default=0.7, type=float)
+        low_text = request.args.get('low_text', default=0.4, type=float)
+        link_threshold = request.args.get('link_threshold', default=0.4, type=float)
+        mag_ratio = request.args.get('mag_ratio', default=1.0, type=float)
+
+        # Create parameters dictionary
+        params = {
+            'batch_size': batch_size,
+            'workers': workers,
+            'text_threshold': text_threshold,
+            'low_text': low_text,
+            'link_threshold': link_threshold,
+            'mag_ratio': mag_ratio
+        }
+        if decoder:
+            params['decoder'] = decoder
+        if beamWidth:
+            params['beamWidth'] = beamWidth
+        if width_ths:
+            params['width_ths'] = width_ths
+
+        # Read text from the image with specified parameters
+        try:
+            result = reader.readtext(image_path, **params)
+        except Exception as e:
+            print(f"Error with parameters: {e}")
+            return jsonify({"error": str(e)}), 500
 
         # Check if result is empty and log appropriate messages
         if not result:
