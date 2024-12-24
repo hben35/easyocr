@@ -42,12 +42,12 @@ def ocr():
                 batch_size=16,  # Reduced batch size
                 workers=4,  # Reduced workers
                 decoder='wordbeamsearch',
-                beamWidth=5,
-                width_ths=1.1,
+                beamWidth=6,
+                width_ths=1.2,
                 #text_threshold=0.9,
                 #low_text=0.2,
                 #link_threshold=0.5,
-                mag_ratio=2
+                mag_ratio=1
             )
 
         # Check if result is empty and log appropriate messages
