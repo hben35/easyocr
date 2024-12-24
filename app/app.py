@@ -45,6 +45,9 @@ def ocr():
         low_text = request.args.get('low_text', default=0.4, type=float)
         link_threshold = request.args.get('link_threshold', default=0.4, type=float)
         mag_ratio = request.args.get('mag_ratio', default=1.0, type=float)
+        paragraphe = request.args.get('paragraphe', default=False, type=bool)
+        min_size = request.args.get('min_size', default=None, type=int)
+        canvas_size = request.args.get('canvas_size', default=None, type=int)
 
         # Create parameters dictionary
         params = {
@@ -61,6 +64,12 @@ def ocr():
             params['beamWidth'] = beamWidth
         if width_ths:
             params['width_ths'] = width_ths
+        if paragraphe:
+            params['paragraph'] = paragraphe
+        if min_size:
+            params['min_size'] = min_size
+        if canvas_size:
+            params['canvas_size'] = canvas_size
 
         # Read text from the image with specified parameters
         try:
